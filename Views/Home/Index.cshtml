@@ -1,0 +1,86 @@
+﻿@{
+ViewData["Title"] = "Welcome to My Book Library";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+        }
+        .content {
+            flex: 1;
+        }
+        .hero-section {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .alert-warning-custom {
+            background-color: aliceblue;
+            color: #856404;
+            border-radius: 3px;
+        }
+        footer {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+        .content-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 2rem; /* Adjust gap as needed */
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4 content">
+    <!-- Hero Section -->
+    <div class="hero-section mb-4">
+        <div class="text-center">
+            <h1 class="display-3">Welcome to My Book Library!</h1>
+            @* <p class="lead">Discover and enjoy a curated collection of books.</p> *@
+        </div>
+    </div>
+
+    <!-- Technologies Used and About Sections -->
+    <div class="content-section">
+        <div class="flex-fill">
+            <h2 class="section-title">Technologies Used</h2>
+            <ul class="list-group">
+                <li class="list-group-item">ASP.NET Core MVC</li>
+                <li class="list-group-item">Entity Framework Core</li>
+                <li class="list-group-item">Bootstrap 5</li>
+                <li class="list-group-item">SQLite</li>
+                <li class="list-group-item">ASP.NET Core Identity (for authentication and authorization)</li>
+            </ul>
+        </div>
+        <div class="flex-fill">
+            <h2 class="section-title">About This Project</h2>
+            <p>This is my first ASP.NET project, and I learnt lots of things whilst building it!</p>
+            <p>The database was populated by importing a dataset from Kaggle.</p>
+            <p class="alert alert-warning alert-warning-custom">I know the frontend design won't win any awards, but it’s functional! (I think)</p>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

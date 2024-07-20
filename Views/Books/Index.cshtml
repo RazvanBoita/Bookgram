@@ -1,0 +1,85 @@
+@model IEnumerable<LearnByDoing.Models.Book>
+
+@{
+ViewData["Title"] = "Books";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"]</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border-radius: 3px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .card-text {
+            margin-bottom: 0.5rem;
+        }
+        .btn-read-more {
+            margin-top: auto; /* Pushes the button to the bottom */
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">BookStore</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/Books/Index">Books</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/Books/Search">Search</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-5">Best Rated Books</h1>
+    <div class="row">
+        @foreach (var book in Model)
+        {
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Title: @book.Title</h5>
+                    <p class="card-text"><strong>Authors:</strong> @book.Authors</p>
+                    <p class="card-text"><strong>Average Rating:</strong> @book.AverageRating</p>
+                    <p class="card-text"><strong>Number of Pages:</strong> @book.NumPages</p>
+                    <p class="card-text"><strong>Publication Date:</strong> @book.PublicationDate</p>
+                    <a href="/Books/Details?bookID=@book.BookId" class="btn btn-primary btn-read-more">Read More</a>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+    <div class="text-center mt-4">
+        <a href="/Books/Search" class="btn btn-secondary">See More</a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
