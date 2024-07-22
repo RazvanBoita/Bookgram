@@ -11,14 +11,183 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnByDoing.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240720114239_ModifyMigration")]
-    partial class ModifyMigration
+    [Migration("20240722174814_SecondMapping")]
+    partial class SecondMapping
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
+
+            modelBuilder.Entity("AspNetRoleAspNetUser", b =>
+                {
+                    b.Property<string>("RolesId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("RolesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("AspNetRoleAspNetUser");
+                });
+
+            modelBuilder.Entity("AspNetUserBook", b =>
+                {
+                    b.Property<int>("BooksBookId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("BooksBookId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("AspNetUserBook");
+                });
+
+            modelBuilder.Entity("LearnByDoing.Models.AspNetRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AspNetRole");
+                });
+
+            modelBuilder.Entity("LearnByDoing.Models.AspNetRoleClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaim");
+                });
+
+            modelBuilder.Entity("LearnByDoing.Models.AspNetUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("EmailConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LockoutEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("LockoutEnd")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PhoneNumberConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TwoFactorEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AspNetUser");
+                });
+
+            modelBuilder.Entity("LearnByDoing.Models.AspNetUserClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaim");
+                });
+
+            modelBuilder.Entity("LearnByDoing.Models.AspNetUserLogin", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogin");
+                });
 
             modelBuilder.Entity("LearnByDoing.Models.Book", b =>
                 {
@@ -30,7 +199,8 @@ namespace LearnByDoing.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<double?>("AverageRating")
-                        .HasColumnType("REAL");
+                        .HasColumnType("REAL")
+                        .HasColumnName("average_rating");
 
                     b.Property<string>("Isbn")
                         .HasColumnType("TEXT");
@@ -39,22 +209,26 @@ namespace LearnByDoing.Data.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<string>("LanguageCode")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("language_code");
 
                     b.Property<int?>("NumPages")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PublicationDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("publication_date");
 
                     b.Property<string>("Publisher")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("RatingsCount")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("ratings_count");
 
                     b.Property<int?>("TextReviewsCount")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("text_reviews_count");
 
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
@@ -260,6 +434,69 @@ namespace LearnByDoing.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AspNetRoleAspNetUser", b =>
+                {
+                    b.HasOne("LearnByDoing.Models.AspNetRole", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearnByDoing.Models.AspNetUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AspNetUserBook", b =>
+                {
+                    b.HasOne("LearnByDoing.Models.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksBookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearnByDoing.Models.AspNetUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LearnByDoing.Models.AspNetRoleClaim", b =>
+                {
+                    b.HasOne("LearnByDoing.Models.AspNetRole", "Role")
+                        .WithMany("AspNetRoleClaims")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("LearnByDoing.Models.AspNetUserClaim", b =>
+                {
+                    b.HasOne("LearnByDoing.Models.AspNetUser", "User")
+                        .WithMany("AspNetUserClaims")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LearnByDoing.Models.AspNetUserLogin", b =>
+                {
+                    b.HasOne("LearnByDoing.Models.AspNetUser", "User")
+                        .WithMany("AspNetUserLogins")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -309,6 +546,18 @@ namespace LearnByDoing.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LearnByDoing.Models.AspNetRole", b =>
+                {
+                    b.Navigation("AspNetRoleClaims");
+                });
+
+            modelBuilder.Entity("LearnByDoing.Models.AspNetUser", b =>
+                {
+                    b.Navigation("AspNetUserClaims");
+
+                    b.Navigation("AspNetUserLogins");
                 });
 #pragma warning restore 612, 618
         }

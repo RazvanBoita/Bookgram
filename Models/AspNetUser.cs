@@ -40,4 +40,6 @@ public partial class AspNetUser
     public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; } = new List<AspNetUserLogin>();
 
     public virtual ICollection<AspNetRole> Roles { get; set; } = new List<AspNetRole>();
+
+    public ICollection<UserBook> UserBooks { get; set; } = new List<UserBook>();
 }

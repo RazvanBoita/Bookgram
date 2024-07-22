@@ -3,6 +3,7 @@ using System;
 using LearnByDoing.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnByDoing.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240722174438_MapUserToBooks")]
+    partial class MapUserToBooks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -30,6 +33,21 @@ namespace LearnByDoing.Data.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("AspNetRoleAspNetUser");
+                });
+
+            modelBuilder.Entity("AspNetUserBook", b =>
+                {
+                    b.Property<int>("BooksBookId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("BooksBookId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("AspNetUserBook");
                 });
 
             modelBuilder.Entity("LearnByDoing.Models.AspNetRole", b =>
@@ -181,7 +199,8 @@ namespace LearnByDoing.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<double?>("AverageRating")
-                        .HasColumnType("REAL");
+                        .HasColumnType("REAL")
+                        .HasColumnName("average_rating");
 
                     b.Property<string>("Isbn")
                         .HasColumnType("TEXT");
@@ -190,22 +209,26 @@ namespace LearnByDoing.Data.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<string>("LanguageCode")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("language_code");
 
                     b.Property<int?>("NumPages")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PublicationDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("publication_date");
 
                     b.Property<string>("Publisher")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("RatingsCount")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("ratings_count");
 
                     b.Property<int?>("TextReviewsCount")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("text_reviews_count");
 
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
@@ -213,21 +236,6 @@ namespace LearnByDoing.Data.Migrations
                     b.HasKey("BookId");
 
                     b.ToTable("Books");
-                });
-
-            modelBuilder.Entity("LearnByDoing.Models.UserBook", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("UserId", "BookId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("UserBooks");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -441,6 +449,21 @@ namespace LearnByDoing.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("AspNetUserBook", b =>
+                {
+                    b.HasOne("LearnByDoing.Models.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksBookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearnByDoing.Models.AspNetUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("LearnByDoing.Models.AspNetRoleClaim", b =>
                 {
                     b.HasOne("LearnByDoing.Models.AspNetRole", "Role")
@@ -470,25 +493,6 @@ namespace LearnByDoing.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("LearnByDoing.Models.UserBook", b =>
-                {
-                    b.HasOne("LearnByDoing.Models.Book", "Book")
-                        .WithMany("UserBooks")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LearnByDoing.Models.AspNetUser", "User")
-                        .WithMany("UserBooks")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
 
                     b.Navigation("User");
                 });
@@ -554,13 +558,6 @@ namespace LearnByDoing.Data.Migrations
                     b.Navigation("AspNetUserClaims");
 
                     b.Navigation("AspNetUserLogins");
-
-                    b.Navigation("UserBooks");
-                });
-
-            modelBuilder.Entity("LearnByDoing.Models.Book", b =>
-                {
-                    b.Navigation("UserBooks");
                 });
 #pragma warning restore 612, 618
         }

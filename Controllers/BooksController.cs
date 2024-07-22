@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using LearnByDoing.Data;
 using LearnByDoing.Models;
 using LearnByDoing.Services;
@@ -47,5 +48,52 @@ public class BooksController : Controller
             .ToListAsync();
         
         return View(results);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddToRead(int BookID)
+    {
+        var currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (currentUserId is null)
+        {
+            return Unauthorized("User not found");
+        }
+    
+        var userBook = new UserBook()
+        {
+            BookId = BookID,
+            UserId = currentUserId
+        };
+
+        if (_context.UserBooks.Any(ub => ub.BookId == BookID && ub.UserId == currentUserId))
+        {
+            return BadRequest("Book already added");
+        }
+        
+        _context.UserBooks.Add(userBook);
+        await _context.SaveChangesAsync();
+        return Ok("Book added successfully");
+    }
+
+    public async Task<IActionResult> Finished()
+    {
+        var currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (currentUserId is null)
+        {
+            return Unauthorized("User not found");
+        }
+        
+        var entriesReadByCurrentUser = await _context.UserBooks.Where(ub => ub.UserId == currentUserId).ToListAsync();
+        ICollection<Book> booksReadByCurrentUser = new List<Book>();
+        foreach (var entry in entriesReadByCurrentUser)
+        {
+            var book = await _context.Books.FindAsync(entry.BookId);
+            if (book is not null)
+            {
+                booksReadByCurrentUser.Add(book);
+            }
+        }
+
+        return View(booksReadByCurrentUser);
     }
 }

@@ -11,4 +11,31 @@ public class ApplicationDbContext : IdentityDbContext
         : base(options) {}
 
     public DbSet<Book> Books { get; set; }
+    public DbSet<UserBook> UserBooks { get; set; }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        
+        
+        modelBuilder.Entity<AspNetUserLogin>()
+            .HasKey(l => new {l.LoginProvider, l.ProviderKey});
+
+        modelBuilder.Entity<Book>()
+            .HasKey(b => b.BookId);
+        
+        modelBuilder.Entity<UserBook>()
+            .HasKey(ub => new { ub.UserId, ub.BookId });
+
+        modelBuilder.Entity<UserBook>()
+            .HasOne(ub => ub.User)
+            .WithMany(u => u.UserBooks)
+            .HasForeignKey(ub => ub.UserId);
+
+        modelBuilder.Entity<UserBook>()
+            .HasOne(ub => ub.Book)
+            .WithMany(u => u.UserBooks)
+            .HasForeignKey(ub => ub.BookId);
+
+    }
 }

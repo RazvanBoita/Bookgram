@@ -3,6 +3,7 @@ using System;
 using LearnByDoing.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnByDoing.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240722193627_AddingBookPKInContext")]
+    partial class AddingBookPKInContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -181,7 +184,8 @@ namespace LearnByDoing.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<double?>("AverageRating")
-                        .HasColumnType("REAL");
+                        .HasColumnType("REAL")
+                        .HasColumnName("average_rating");
 
                     b.Property<string>("Isbn")
                         .HasColumnType("TEXT");
@@ -190,22 +194,27 @@ namespace LearnByDoing.Data.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<string>("LanguageCode")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("language_code");
 
                     b.Property<int?>("NumPages")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("num_pages");
 
                     b.Property<string>("PublicationDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("publication_date");
 
                     b.Property<string>("Publisher")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("RatingsCount")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("ratings_count");
 
                     b.Property<int?>("TextReviewsCount")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("text_reviews_count");
 
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");

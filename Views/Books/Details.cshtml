@@ -63,7 +63,10 @@ ViewData["Title"] = "Book Details";
             <p><strong>Text Reviews Count:</strong> @Model.TextReviewsCount</p>
             <p><strong>Publication Date:</strong> @Model.PublicationDate</p>
             <p><strong>Publisher:</strong> @Model.Publisher</p>
-            <a href="#" class="btn btn-primary btn-add-to-read">Add to Read</a>
+            <form asp-action="AddToRead" asp-controller="Books" method="post" class="d-inline">
+                <input type="hidden" asp-for="BookId" />
+                <button type="submit" class="btn btn-primary btn-add-to-read">Add to Read</button>
+            </form>
         </div>
     </div>
 </div>
