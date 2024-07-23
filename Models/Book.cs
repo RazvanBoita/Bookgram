@@ -37,4 +37,5 @@ public partial class Book
     public string? Publisher { get; set; }
 
     public ICollection<UserBook> UserBooks { get; set; } = new List<UserBook>();
+    public ICollection<WishlistUserBook> WishlistUserBooks { get; set; } = new List<WishlistUserBook>();
 }

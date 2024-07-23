@@ -72,7 +72,7 @@ public class BooksController : Controller
         
         _context.UserBooks.Add(userBook);
         await _context.SaveChangesAsync();
-        return Ok("Book added successfully");
+        return RedirectToAction("Finished");
     }
 
     public async Task<IActionResult> Finished()
@@ -96,4 +96,115 @@ public class BooksController : Controller
 
         return View(booksReadByCurrentUser);
     }
+
+    public async Task<IActionResult> Unfinished([FromQuery] int bookID)
+    {
+        var currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (currentUserId is null)
+        {
+            return Unauthorized("User not found");
+        }   
+        var searchedEntry = await _context.UserBooks.FindAsync(currentUserId, bookID);
+        if (searchedEntry is null)
+        {
+            return BadRequest("Can't delete book, because it doesn't exist in Finished.");
+        }
+
+        _context.UserBooks.Remove(searchedEntry);
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Finished");
+    }
+    public async Task<IActionResult> Wishlist()
+    {
+        var currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (currentUserId is null)
+        {
+            return Unauthorized("User not found");
+        }
+
+        var entriesFoundInWishlist = await _context.WishlistUserBooks.Where(ub => ub.UserId == currentUserId).ToListAsync();
+        ICollection<Book> wishlistedBooks = new List<Book>();
+        foreach (var entry in entriesFoundInWishlist)
+        {
+            var book = await _context.Books.FindAsync(entry.BookId);
+            if (book is not null)
+            {
+                wishlistedBooks.Add(book);
+            }
+        }
+        return View(wishlistedBooks);
+    }
+    
+    public async Task<IActionResult> AddToWishlist(int BookID)
+    {
+        var currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (currentUserId is null)
+        {
+            return Unauthorized("User not found");
+        }
+
+        var toAdd = new WishlistUserBook()
+        {
+            BookId = BookID,
+            UserId = currentUserId
+        };
+
+        if (_context.WishlistUserBooks.Any(ub => ub.BookId == BookID && ub.UserId == currentUserId))
+        {
+            return BadRequest("Book already added to wishlist");
+        }
+
+        if (_context.UserBooks.Any(ub => ub.BookId == BookID && ub.UserId == currentUserId))
+        {
+            return BadRequest("It seems like you already read this book, hence we can't add it to wishlist.");
+        }
+
+        await _context.WishlistUserBooks.AddAsync(toAdd);
+        await _context.SaveChangesAsync();
+        
+        return RedirectToAction("Wishlist");
+    }
+
+    public async Task<IActionResult> Unwish([FromQuery] int bookId)
+    {
+        var currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (currentUserId is null)
+        {
+            return Unauthorized("User not found");
+        }
+
+        var searchedEntry = await _context.WishlistUserBooks.FindAsync(currentUserId, bookId);
+        if (searchedEntry is null)
+        {
+            return BadRequest("No book to delete from wishlist.");
+        }
+
+        _context.WishlistUserBooks.Remove(searchedEntry);
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Wishlist");
+    }
+
+    public async Task<IActionResult> MoveToRead([FromQuery] int bookId)
+    {
+        var currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (currentUserId is null)
+        {
+            return Unauthorized("User not found");
+        }
+        var searchedEntry = await _context.WishlistUserBooks.FindAsync(currentUserId, bookId);
+        if (searchedEntry is null)
+        {
+            return BadRequest("No such book found in wishlist");
+        }
+        if (_context.UserBooks.Any(ub => ub.BookId == bookId && ub.UserId == currentUserId))
+        {
+            return BadRequest("Book already added to finished.");
+        }
+
+        await _context.UserBooks.AddAsync(new UserBook(){BookId = bookId, UserId = currentUserId});
+        _context.WishlistUserBooks.Remove(searchedEntry);
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Finished");
+    }
+    
 }

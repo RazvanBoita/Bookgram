@@ -42,6 +42,9 @@ ViewData["Title"] = "Added Books";
             <li class="nav-item">
                 <a class="nav-link" href="/Books/Finished">Finished</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/Books/Wishlist">Wishlist</a>
+            </li>
         </ul>
     </div>
 </nav>
@@ -68,6 +71,7 @@ ViewData["Title"] = "Added Books";
                     <p><strong>Publication Date:</strong> @book.PublicationDate</p>
                     <p><strong>Publisher:</strong> @book.Publisher</p>
                     <a href="/Books/Details?bookID=@book.BookId" class="btn btn-primary">View Details</a>
+                    <a href="/Books/Unfinished?bookID=@book.BookId" class="btn btn-primary" style="margin-top: 5px">Remove from Finished</a>
                 </div>
             </div>
         </div>

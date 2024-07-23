@@ -42,4 +42,6 @@ public partial class AspNetUser
     public virtual ICollection<AspNetRole> Roles { get; set; } = new List<AspNetRole>();
 
     public ICollection<UserBook> UserBooks { get; set; } = new List<UserBook>();
+    public ICollection<WishlistUserBook> WishlistUserBooks { get; set; } = new List<WishlistUserBook>();
+
 }

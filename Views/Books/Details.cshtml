@@ -42,6 +42,12 @@ ViewData["Title"] = "Book Details";
             <li class="nav-item">
                 <a class="nav-link" href="/Books/Search">Search</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/Books/Finished">Finished</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/Books/Wishlist">Wishlist</a>
+            </li>
         </ul>
     </div>
 </nav>
@@ -66,6 +72,10 @@ ViewData["Title"] = "Book Details";
             <form asp-action="AddToRead" asp-controller="Books" method="post" class="d-inline">
                 <input type="hidden" asp-for="BookId" />
                 <button type="submit" class="btn btn-primary btn-add-to-read">Add to Read</button>
+            </form>
+            <form asp-action="AddToWishlist" asp-controller="Books" method="post" class="d-inline">
+                <input type="hidden" asp-for="BookId" />
+                <button type="submit" class="btn btn-primary btn-add-to-read">Add to Wishlist</button>
             </form>
         </div>
     </div>
