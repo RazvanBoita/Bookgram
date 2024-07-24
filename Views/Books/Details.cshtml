@@ -23,7 +23,7 @@ ViewData["Title"] = "Book Details";
             background-color: #f8f9fa;
             border-bottom: 1px solid #e9ecef;
         }
-        .book-details .btn-add-to-read {
+        .book-details .btn-add-to-read, .btn-delete {
             margin-top: 15px;
         }
     </style>
@@ -77,6 +77,13 @@ ViewData["Title"] = "Book Details";
                 <input type="hidden" asp-for="BookId" />
                 <button type="submit" class="btn btn-primary btn-add-to-read">Add to Wishlist</button>
             </form>
+            @if (ViewData["isAuthor"] != null && (bool)ViewData["isAuthor"])
+            {
+            <form asp-action="Delete" asp-controller="Books" method="post" class="d-inline">
+                <input type="hidden" asp-for="BookId" />
+                <button type="submit" class="btn btn-danger btn-delete">Delete Book</button>
+            </form>
+            }
         </div>
     </div>
 </div>

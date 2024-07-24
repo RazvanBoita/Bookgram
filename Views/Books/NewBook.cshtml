@@ -1,0 +1,91 @@
+@model LearnByDoing.Models.Book
+
+@{
+Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Book</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Add New Book</h2>
+    <form method="post" action="/Books/NewBook">
+        <div class="form-group">
+            <label for="Title">Title</label>
+            <input type="text" class="form-control" id="Title" name="Title" value="@Model?.Title" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Authors">Authors</label>
+            <input type="text" class="form-control" id="Authors" name="Authors" value="@Model?.Authors" />
+            <span asp-validation-for="Authors" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="AverageRating">Average Rating (defaulted to 0)</label>
+            <input type="number" step="0.1" class="form-control" id="AverageRating" name="AverageRating" value="@Model?.AverageRating" readonly />
+            <span asp-validation-for="AverageRating" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Isbn">ISBN (chosen by us)</label>
+            <input type="text" class="form-control" id="Isbn" name="Isbn" value="@Model?.Isbn" readonly />
+            <span asp-validation-for="Isbn" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Isbn13">ISBN-13 (chosen by us)</label>
+            <input type="number" step="1" class="form-control" id="Isbn13" name="Isbn13" value="@Model?.Isbn13" readonly />
+            <span asp-validation-for="Isbn13" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="LanguageCode">Language Code</label>
+            <select class="form-control" id="LanguageCode" name="LanguageCode">
+                <option value="">Select a language</option>
+                <option value="eng">English</option>
+                <option value="ro">Romanian</option>
+                <option value="ru">Russian</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+            </select>
+            <span asp-validation-for="LanguageCode" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="NumPages">Number of Pages</label>
+            <input type="number" step="1" class="form-control" id="NumPages" name="NumPages" value="@Model?.NumPages" />
+            <span asp-validation-for="NumPages" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="RatingsCount">Ratings Count (defaulted to 0)</label>
+            <input type="number" step="1" class="form-control" id="RatingsCount" name="RatingsCount" value="@Model?.RatingsCount" readonly />
+            <span asp-validation-for="RatingsCount" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="TextReviewsCount">Text Reviews Count (defaulted to 0)</label>
+            <input type="number" step="1" class="form-control" id="TextReviewsCount" name="TextReviewsCount" value="@Model?.TextReviewsCount" readonly />
+            <span asp-validation-for="TextReviewsCount" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="PublicationDate">Publication Date</label>
+            <input type="date" class="form-control" id="PublicationDate" name="PublicationDate" value="@Model?.PublicationDate?" />
+            <span asp-validation-for="PublicationDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Publisher">Publisher</label>
+            <input type="text" class="form-control" id="Publisher" name="Publisher" value="@User?.Identity?.Name" readonly />
+            <span asp-validation-for="Publisher" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Book</button>
+    </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.3/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate.unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

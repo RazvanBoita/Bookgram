@@ -33,6 +33,10 @@ public class BooksController : Controller
     public async Task<IActionResult> Details([FromQuery] int bookID)
     {
         var searchedBook = await _context.Books.FindAsync(bookID);
+        var currentUserName = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        var userIsAuthor = false;
+        userIsAuthor = currentUserName == searchedBook?.Publisher;
+        ViewData["isAuthor"] = userIsAuthor;
         return View(searchedBook);
     }
 
@@ -205,6 +209,56 @@ public class BooksController : Controller
         _context.WishlistUserBooks.Remove(searchedEntry);
         await _context.SaveChangesAsync();
         return RedirectToAction("Finished");
+    }
+
+
+    public IActionResult NewBook()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult NewBook(Book book)
+    {
+        
+        if (!ModelState.IsValid)
+        {
+            return View(book);
+        }
+
+        book.Isbn13 = 9780374520656;
+        book.Isbn = "0374520658";
+        book.AverageRating = 0;
+        book.RatingsCount = 0;
+        book.TextReviewsCount = 0;
+        _context.Books.Add(book);
+        _context.SaveChanges();
+        return View("AllDone");
+    }
+
+    public IActionResult Delete(int BookId)
+    {
+        //mai facem un check, ca altfel orice user ar putea apela endpoint-ul asta si sa stearga orice carte
+        var bookToBeDeleted = _context.Books.Find(BookId);
+        if (bookToBeDeleted is null)
+        {
+            return BadRequest("No book found with id " + BookId);
+        }
+        var currentUserName = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        if (currentUserName is null)
+        {
+            return Unauthorized("User not found");
+        }
+
+        var isAuthor = currentUserName == bookToBeDeleted?.Publisher;
+        if (!isAuthor)
+        {
+            return BadRequest("You don't have the privileges to delete book with id " + BookId);
+        }
+
+        _context.Books.Remove(bookToBeDeleted);
+        _context.SaveChanges();
+        return View("AllDone");
     }
     
 }
