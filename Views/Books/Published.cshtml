@@ -1,7 +1,8 @@
+@using LearnByDoing.Controllers
 @model IEnumerable<LearnByDoing.Models.Book>
 
 @{
-ViewData["Title"] = "Books";
+    ViewData["Title"] = "Published Books";
 }
 
 <!DOCTYPE html>
@@ -12,27 +13,19 @@ ViewData["Title"] = "Books";
     <title>@ViewData["Title"]</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .card {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            border-radius: 3px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        .book-list {
+            margin-top: 20px;
         }
-        .card-body {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        .book-list .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .card-title {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
+        .book-list .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
         }
-        .card-text {
-            margin-bottom: 0.5rem;
-        }
-        .btn-read-more {
-            margin-top: auto; /* Pushes the button to the bottom */
+        .btn-view-details, .btn-danger {
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -56,37 +49,38 @@ ViewData["Title"] = "Books";
             <li class="nav-item">
                 <a class="nav-link" href="/Books/Wishlist">Wishlist</a>
             </li>
-            @if (ViewData["hasPublished"] is true)
-            {
-                <li class="nav-item">
-                    <a class="nav-link" href="/Books/Published">Published Books</a>
-                </li>   
-            }
+            <li class="nav-item">
+                <a class="nav-link" href="/Books/Published">Published Books</a>
+            </li>
         </ul>
     </div>
 </nav>
 
-<div class="container mt-5">
-    <h1 class="text-center mb-5">Best Rated Books</h1>
+<div class="container book-list">
+    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
     <div class="row">
         @foreach (var book in Model)
         {
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Title: @book.Title</h5>
-                    <p class="card-text"><strong>Authors:</strong> @book.Authors</p>
-                    <p class="card-text"><strong>Average Rating:</strong> @book.AverageRating</p>
-                    <p class="card-text"><strong>Number of Pages:</strong> @book.NumPages</p>
-                    <p class="card-text"><strong>Publication Date:</strong> @book.PublicationDate</p>
-                    <a href="/Books/Details?bookID=@book.BookId" class="btn btn-primary btn-read-more">Read More</a>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">@book.Title</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Authors:</strong> @book.Authors</p>
+                        <p><strong>Average Rating:</strong> @book.AverageRating</p>
+                        <p><strong>ISBN:</strong> @book.Isbn</p>
+                        <p><strong>Number of Pages:</strong> @book.NumPages</p>
+                        <p><strong>Publication Date:</strong> @book.PublicationDate</p>
+                        <a href="/Books/Details?bookID=@book.BookId" class="btn btn-primary btn-view-details">View Details</a>
+                        <form asp-action="Delete" asp-controller="Books" method="post" class="d-inline">
+                            <input type="hidden" name="BookId" value="@book.BookId" />
+                            <button type="submit" class="btn btn-danger btn-delete">Delete Book</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
         }
-    </div>
-    <div class="text-center mt-4">
-        <a href="/Books/Search" class="btn btn-secondary">See More</a>
     </div>
 </div>
 

@@ -26,6 +26,19 @@ public class BooksController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
+        var currentUserName = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        if (currentUserName is null)
+        {
+            ViewData["hasPublished"] = false;
+            Console.WriteLine("not showing because no username");
+        }
+        else
+        {
+            var hasPublished =  _context.Books.Where(b => b.Publisher == currentUserName).Any();
+            Console.WriteLine("Has published is " + hasPublished);
+            ViewData["hasPublished"] = hasPublished;
+        }
+
         var firstTenBooks = await _bookService.GetMainBooks();
         return View(firstTenBooks);
     }
@@ -239,6 +252,7 @@ public class BooksController : Controller
     public IActionResult Delete(int BookId)
     {
         //mai facem un check, ca altfel orice user ar putea apela endpoint-ul asta si sa stearga orice carte
+        Console.WriteLine(BookId);
         var bookToBeDeleted = _context.Books.Find(BookId);
         if (bookToBeDeleted is null)
         {
@@ -259,6 +273,24 @@ public class BooksController : Controller
         _context.Books.Remove(bookToBeDeleted);
         _context.SaveChanges();
         return View("AllDone");
+    }
+
+    public IActionResult Published()
+    {
+        var currentUserName = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        if (currentUserName is null)
+        {
+            return BadRequest("You haven't published any books yet...");
+        }
+        
+        var publishedBooks =  _context.Books.Where(b => b.Publisher == currentUserName);
+        if (publishedBooks.Any() is false)
+        {
+            return BadRequest("You haven't published any books yet...");
+        }
+
+        return View(publishedBooks);
+
     }
     
 }
