@@ -3,6 +3,7 @@ using System;
 using LearnByDoing.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnByDoing.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240726112106_TryingToRemoveReviews")]
+    partial class TryingToRemoveReviews
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -215,34 +218,6 @@ namespace LearnByDoing.Data.Migrations
                     b.HasKey("BookId");
 
                     b.ToTable("Books");
-                });
-
-            modelBuilder.Entity("LearnByDoing.Models.Review", b =>
-                {
-                    b.Property<int?>("ReviewId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BookId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Content")
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("Stars")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ReviewId");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("LearnByDoing.Models.UserBook", b =>
@@ -515,21 +490,6 @@ namespace LearnByDoing.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("LearnByDoing.Models.Review", b =>
-                {
-                    b.HasOne("LearnByDoing.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId");
-
-                    b.HasOne("LearnByDoing.Models.AspNetUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Book");
 
                     b.Navigation("User");
                 });

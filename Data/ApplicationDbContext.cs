@@ -1,4 +1,5 @@
-﻿using LearnByDoing.Models;
+﻿using Azure.Core.Pipeline;
+using LearnByDoing.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,8 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Book> Books { get; set; }
     public DbSet<UserBook> UserBooks { get; set; }
     public DbSet<WishlistUserBook> WishlistUserBooks { get; set; }
+    
+    public DbSet<Review> Reviews { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -47,10 +50,10 @@ public class ApplicationDbContext : IdentityDbContext
             .WithMany(u => u.WishlistUserBooks)
             .HasForeignKey(ub => ub.UserId);
 
-        modelBuilder.Entity<WishlistUserBook>()
-            .HasOne(ub => ub.Book)
-            .WithMany(u => u.WishlistUserBooks)
-            .HasForeignKey(ub => ub.BookId);
+        // modelBuilder.Entity<WishlistUserBook>()
+        //     .HasOne(ub => ub.Book)
+        //     .WithMany(u => u.WishlistUserBooks)
+        //     .HasForeignKey(ub => ub.BookId);
 
     }
 }

@@ -3,6 +3,7 @@ using LearnByDoing.Data;
 using LearnByDoing.Models;
 using LearnByDoing.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nest;
@@ -15,12 +16,13 @@ public class BooksController : Controller
     private readonly ILogger<BooksController> _logger;
     private readonly ApplicationDbContext _context;
     private readonly IBookService _bookService;
-
-    public BooksController(ILogger<BooksController> logger, ApplicationDbContext context, IBookService bookService)
+    private readonly UserManager<IdentityUser> _userManager;
+    public BooksController(ILogger<BooksController> logger, ApplicationDbContext context, IBookService bookService, UserManager<IdentityUser> userManager)
     {
         _logger = logger;
         _context = context;
         _bookService = bookService;
+        _userManager = userManager;
     } 
     
     [AllowAnonymous]
@@ -50,6 +52,11 @@ public class BooksController : Controller
         var userIsAuthor = false;
         userIsAuthor = currentUserName == searchedBook?.Publisher;
         ViewData["isAuthor"] = userIsAuthor;
+        
+        var currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userHasReviewedBook = _context.Reviews.Any(r => r.BookId == bookID && r.UserId == currentUserId);
+        ViewData["hasReviewed"] = userHasReviewedBook;
+        
         return View(searchedBook);
     }
 
@@ -291,6 +298,84 @@ public class BooksController : Controller
 
         return View(publishedBooks);
 
+    }
+    
+    public IActionResult Review(int BookId)
+    {
+        var currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (_context.Reviews.Any(r => r.BookId == BookId && r.UserId == currentUserId))
+        {
+            return BadRequest("You already added a review for this page.");
+        }
+        return View(new Review(){BookId = BookId});
+    }
+
+    [HttpPost]
+    public IActionResult Review(Review model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(
+                "Review invalid. Stars should be between 0-5. Content length not more than 100 characters");
+        }
+        var currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (_context.Reviews.Any(r => r.BookId == model.BookId && r.UserId == currentUserId))
+        {
+            return BadRequest("You already added a review for this page.");
+        }
+
+        model.UserId = currentUserId;
+        try
+        {
+            _context.Reviews.Add(model);
+            _context.SaveChanges();
+            return View("AllDone");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    public IActionResult ReviewDel([FromQuery] int BookId)
+    {
+        var currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!_context.Reviews.Any(r => r.BookId == BookId && r.UserId == currentUserId))
+        {
+            return BadRequest("You don't have a review added for this book.");
+        }
+
+        var review = _context.Reviews.First(r => r.BookId == BookId && r.UserId == currentUserId);
+        _context.Reviews.Remove(review);
+        _context.SaveChanges();
+        return View("AllDone");
+    }
+
+    [AllowAnonymous]
+    public async Task<IActionResult> Reviews([FromQuery] int BookId)
+    {
+        var allReviews = await _context.Reviews.Where(r => r.BookId == BookId).ToListAsync();
+        foreach (var review in allReviews)
+        {
+            Console.WriteLine("Am un review aici pt content " + review.Content);
+            var user = await _userManager.FindByIdAsync(review.UserId);
+            if (user is null)
+            {
+                continue;
+            }
+            review.UserId = user.UserName;
+        }
+
+        var book = await _context.Books.FindAsync(BookId);
+        ViewData["bookTitle"] = book.Title;
+        Console.WriteLine(allReviews.Count());
+        ViewData["hasReviews"] = true;
+        if (allReviews.Count() == 0)
+        {
+            Console.WriteLine("intru aici");
+            ViewData["hasReviews"] = false;
+        }
+        return View(allReviews);
     }
     
 }

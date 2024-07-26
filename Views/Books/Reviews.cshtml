@@ -1,0 +1,68 @@
+@model IEnumerable<Review>
+
+@{
+ViewData["Title"] = "Book Reviews";
+Layout = "_Layout";
+var hasReviews = ViewData["hasReviews"] != null && (bool)ViewData["hasReviews"];
+var bookTitle = ViewData["bookTitle"] as string;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .review-card {
+            margin-bottom: 1rem;
+        }
+        .rating-stars {
+            color: #f39c12;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>@bookTitle</h2>
+
+    @if (hasReviews)
+    {
+    <div class="row">
+        @foreach (var review in Model)
+        {
+        <div class="col-md-4">
+            <div class="card review-card">
+                <div class="card-body">
+                    <h5 class="card-title">Review by User @review.UserId</h5>
+                    <p class="card-text">
+                                <span class="rating-stars">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                    <i class="fa @((i <= review.Stars) ? "fa-star" : "fa-star-o")"></i>
+                                    }
+                                </span>
+                        <br />
+                        @review.Content
+                    </p>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+    }
+    else
+    {
+    <p class="text-muted">@bookTitle doesn't have any reviews yet.</p>
+    }
+
+    <a href="@Url.Action("Index", "Books")" class="btn btn-secondary mt-3">Back to Books</a>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+</body>
+</html>

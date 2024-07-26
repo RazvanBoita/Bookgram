@@ -84,6 +84,15 @@ ViewData["Title"] = "Book Details";
                 <button type="submit" class="btn btn-danger btn-delete">Delete Book</button>
             </form>
             }
+            @if (ViewData["hasReviewed"] != null && !(bool)ViewData["hasReviewed"])
+            {
+                <a href="/Books/Review?BookId=@Model.BookId" class="btn btn-primary btn-add-to-read">Add Review</a>
+            }
+            @if (ViewData["hasReviewed"] != null && (bool)ViewData["hasReviewed"])
+            {
+                <a href="/Books/ReviewDel?BookId=@Model.BookId" class="btn btn-primary btn-add-to-read">Delete Review</a>
+            }
+            <a href="/Books/Reviews?BookId=@Model.BookId" class="btn btn-primary btn-add-to-read">Read Reviews</a>
         </div>
     </div>
 </div>
